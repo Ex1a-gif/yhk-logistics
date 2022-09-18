@@ -1,0 +1,12 @@
+.register-btn {
+    background-color: red;
+    display: block;
+    padding: 10px 0px;
+}
+
+.register-btn:hover {
+    background-color: #890000;
+	color: #ffffff;
+	text-decoration: none;
+	transition: 0.3s;
+}

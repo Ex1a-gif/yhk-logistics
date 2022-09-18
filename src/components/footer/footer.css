@@ -1,0 +1,15 @@
+.footer {
+    padding: 20px 0px;
+    background-color: #0C1239;
+}
+
+.footer-text {
+    color: #fff;
+    text-align: center;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0px;
+}

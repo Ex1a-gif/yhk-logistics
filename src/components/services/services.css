@@ -1,0 +1,25 @@
+.services {
+    padding: 100px 0px;
+}
+
+.services-subtitle {
+    font-size: 20px;
+    margin: 0;
+    color: red;
+    font-weight: bold;
+}
+
+.services-title {
+    font-weight: 700;
+    font-size: 50px;
+    margin: 0;
+}
+
+.services-card {
+    padding: 50px;
+}
+
+.services-icon {
+    color: red;
+    font-size: 40px;
+}

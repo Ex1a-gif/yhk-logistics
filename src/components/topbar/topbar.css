@@ -1,0 +1,17 @@
+.nav-item {
+    font-weight: 500;
+}
+
+.login-topbar-btn {
+    background-color: red;
+	border: none;
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.login-topbar-btn:hover {
+	background-color: #890000;
+	color: #ffffff;
+	text-decoration: none;
+	transition: 0.3s;
+}

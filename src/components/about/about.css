@@ -1,0 +1,18 @@
+.about {
+    padding: 100px 0px;
+    background-color: #0C1239;
+}
+
+.about-title {
+    color: #fff;
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.about-subtitle {
+    color: #fff;
+}
+
+.about-image {
+    max-width: 500px;
+}

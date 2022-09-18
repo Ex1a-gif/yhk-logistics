@@ -1,0 +1,19 @@
+.quote-wrapper {
+    position: relative;
+	background: url('../../assets/background.jpg');
+	min-height: 50vh;
+	background-size: cover;
+	background-position: center;
+}
+
+.quote-wrapper h1 {
+	font-weight: 800;
+	color: #ffffff;
+}
+
+.quote-wrapper p {
+	padding: 0;
+	margin: 1em 0 0 0;
+	font-weight: 500;
+	color: #ffffff;
+}
