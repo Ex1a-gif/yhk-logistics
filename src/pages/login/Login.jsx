@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useRef } from "react";
 import {
   Card,
   Col,
@@ -9,21 +9,37 @@ import {
   Button,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import Topbar from "../../components/topbar/Topbar";
+import axios from "axios";
 import "./login.css";
 
 const Login = () => {
+  const emailRef = useRef();
+  const passwordRef = useRef();
+
+  const { dispatch, isFetching } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/");
+    dispatch({ type: "LOGIN_START" });
+    try {
+      const res = await axios.post("/auth/login", {
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      });
+      dispatch({ type: "LOGIN_SUCCESS", payload: res.data });
+      res.data && window.location.replace("/");
+    } catch (err) {
+      dispatch({ type: "LOGIN_FAIL" });
+    }
   };
 
   return (
     <div className="login">
       <Topbar />
-      <div class="hero d-flex flex-column justify-content-center">
+      <div className="hero d-flex flex-column justify-content-center">
         <Container>
           <Row>
             <Col md={6}>
@@ -40,9 +56,7 @@ const Login = () => {
                           <Form.Control
                             id="email"
                             type="email"
-                            //   onChange={(e) => {
-                            //     setEmail(e.target.value);
-                            //   }}
+                            ref={emailRef}
                           />
                         </InputGroup>
                       </Form.Group>
@@ -53,9 +67,7 @@ const Login = () => {
                           <Form.Control
                             id="password"
                             type="password"
-                            //   onChange={(e) => {
-                            //     setPassword(e.target.value);
-                            //   }}
+                            ref={passwordRef}
                           />
                         </InputGroup>
                       </Form.Group>
@@ -63,6 +75,7 @@ const Login = () => {
                       <Button
                         type="submit"
                         className="login-btn fw-bold rounded-0 shadow-none"
+                        disabled={isFetching}
                       >
                         Log In
                       </Button>

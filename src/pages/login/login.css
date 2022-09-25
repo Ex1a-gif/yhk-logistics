@@ -14,6 +14,12 @@
 	text-decoration: none;
 }
 
+.login-btn:focus {
+    background-color: #890000;
+	color: #ffffff;
+	text-decoration: none;
+}
+
 .register-link {
     display: block;
     text-align: center;

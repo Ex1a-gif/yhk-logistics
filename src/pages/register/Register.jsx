@@ -1,28 +1,33 @@
 import React from "react";
-import {
-  Card,
-  Col,
-  Container,
-  Form,
-  Row,
-  InputGroup,
-  Button,
-} from "react-bootstrap";
+import { Card, Col, Container, Form, Row, Button } from "react-bootstrap";
+import * as yup from "yup";
+import * as formik from "formik";
 import { useNavigate } from "react-router-dom";
 import Topbar from "../../components/topbar/Topbar";
 import "./register.css";
+import axios from "axios";
 
 const Register = () => {
+  const schema = yup.object().shape({
+    firstName: yup.string().required("First name is required"),
+    lastName: yup.string().required("Last Name is required"),
+    email: yup.string().required("Email is required"),
+    password: yup.string().required("Password is required"),
+    address: yup.string().required("Address is required"),
+    contactNumber: yup.string().required("Contact number is required"),
+    dateCreated: yup.date().default(function () {
+      return new Date();
+    }),
+  });
+
+  const { Formik } = formik;
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    navigate("/");
-  };
   return (
-    <div className="login">
+    <div className="register">
       <Topbar />
-      <div class="hero d-flex flex-column justify-content-center">
+      <div className="hero d-flex flex-column justify-content-center">
         <Container>
           <Row>
             <Col md={12}>
@@ -33,126 +38,157 @@ const Register = () => {
                     Logistics
                   </Card.Title>
                   <div className="px-4">
-                    <Form onSubmit={handleSubmit}>
-                      <Row>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label htmlFor="firstName">
-                              First Name
-                            </Form.Label>
-                            <InputGroup className="mb-3">
-                              <Form.Control
-                                id="firstName"
-                                type="text"
-                                //   onChange={(e) => {
-                                //     setEmail(e.target.value);
-                                //   }}
-                              />
-                            </InputGroup>
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group>
-                            <Form.Label htmlFor="lastName">
-                              Last Name
-                            </Form.Label>
-                            <InputGroup className="mb-3">
-                              <Form.Control
-                                id="lastName"
-                                type="text"
-                                //   onChange={(e) => {
-                                //     setPassword(e.target.value);
-                                //   }}
-                              />
-                            </InputGroup>
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label htmlFor="email">Email</Form.Label>
-                            <InputGroup className="mb-3">
-                              <Form.Control
-                                id="email"
-                                type="email"
-                                //   onChange={(e) => {
-                                //     setEmail(e.target.value);
-                                //   }}
-                              />
-                            </InputGroup>
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group>
-                            <Form.Label htmlFor="password">Password</Form.Label>
-                            <InputGroup className="mb-3">
-                              <Form.Control
-                                id="password"
-                                type="password"
-                                //   onChange={(e) => {
-                                //     setPassword(e.target.value);
-                                //   }}
-                              />
-                            </InputGroup>
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md={6}>
-                          <Form.Group>
-                            <Form.Label htmlFor="address">Address</Form.Label>
-                            <InputGroup className="mb-3">
-                              <Form.Control
-                                id="address"
-                                type="text"
-                                //   onChange={(e) => {
-                                //     setEmail(e.target.value);
-                                //   }}
-                              />
-                            </InputGroup>
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group>
-                            <Form.Label htmlFor="contactNumber">
-                              Contact Number
-                            </Form.Label>
-                            <InputGroup className="mb-3">
-                              <Form.Control
-                                id="contactNumber"
-                                type="phone"
-                                //   onChange={(e) => {
-                                //     setPassword(e.target.value);
-                                //   }}
-                              />
-                            </InputGroup>
-                          </Form.Group>
-                        </Col>
-                      </Row>
+                    <Formik
+                      validationSchema={schema}
+                      initialValues={{
+                        firstName: "",
+                        lastName: "",
+                        email: "",
+                        password: "",
+                        address: "",
+                        contactNumber: "",
+                      }}
+                      onSubmit={async (values) => {
+                        await new Promise((r) => setTimeout(r, 500));
+                        alert(JSON.stringify(values, null, 2));
+                      }}
+                    >
+                      {({
+                        handleSubmit,
+                        handleChange,
+                        handleBlur,
+                        values,
+                        isValid,
+                        errors,
+                      }) => (
+                        <Form noValidate onSubmit={handleSubmit}>
+                          <Row>
+                            <Col md={6} className="mb-3">
+                              <Form.Group controlId="firstName">
+                                <Form.Label>First Name</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  name="firstName"
+                                  value={values.firstName}
+                                  onChange={handleChange}
+                                  isInvalid={!!errors.firstName}
+                                />
 
-                      <Row md={5} className="px-md-2">
-                        <Button
-                          type="submit"
-                          className="register-btn fw-bold rounded-0 shadow-none"
-                        >
-                          Create Account
-                        </Button>
-                      </Row>
-                      <small className="login-link">
-                        Already have an account? Click{" "}
-                        <a
-                          href="/login"
-                          style={{
-                            textDecoration: "none",
-                            color: "red",
-                          }}
-                        >
-                          here
-                        </a>{" "}
-                        to login
-                      </small>
-                    </Form>
+                                <Form.Control.Feedback type="invalid">
+                                  {errors.firstName}
+                                </Form.Control.Feedback>
+                              </Form.Group>
+                            </Col>
+                            <Col>
+                              <Form.Group controlId="lastName">
+                                <Form.Label>Last Name</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  name="lastName"
+                                  value={values.lastName}
+                                  onChange={handleChange}
+                                  isInvalid={!!errors.lastName}
+                                />
+
+                                <Form.Control.Feedback type="invalid">
+                                  {errors.lastName}
+                                </Form.Control.Feedback>
+                              </Form.Group>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col md={6} className="mb-3">
+                              <Form.Group controlId="email">
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control
+                                  type="email"
+                                  name="email"
+                                  value={values.email}
+                                  onChange={handleChange}
+                                  isInvalid={!!errors.email}
+                                />
+
+                                <Form.Control.Feedback type="invalid">
+                                  {errors.email}
+                                </Form.Control.Feedback>
+                              </Form.Group>
+                            </Col>
+                            <Col>
+                              <Form.Group controlId="password">
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control
+                                  type="password"
+                                  name="password"
+                                  value={values.password}
+                                  onChange={handleChange}
+                                  isInvalid={!!errors.password}
+                                />
+
+                                <Form.Control.Feedback type="invalid">
+                                  {errors.password}
+                                </Form.Control.Feedback>
+                              </Form.Group>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col md={6} className="mb-3">
+                              <Form.Group controlId="address">
+                                <Form.Label>Address</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  name="address"
+                                  value={values.address}
+                                  onChange={handleChange}
+                                  isInvalid={!!errors.address}
+                                />
+
+                                <Form.Control.Feedback type="invalid">
+                                  {errors.address}
+                                </Form.Control.Feedback>
+                              </Form.Group>
+                            </Col>
+                            <Col>
+                              <Form.Group controlId="contactNumber">
+                                <Form.Label>Contact Number</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  name="contactNumber"
+                                  value={values.contactNumber}
+                                  onChange={handleChange}
+                                  isInvalid={!!errors.contactNumber}
+                                />
+
+                                <Form.Control.Feedback type="invalid">
+                                  {errors.contactNumber}
+                                </Form.Control.Feedback>
+                              </Form.Group>
+                            </Col>
+                          </Row>
+
+                          <Row md={5} className="px-md-2">
+                            <Button
+                              type="submit"
+                              className="register-btn fw-bold rounded-0 shadow-none"
+                            >
+                              Create Account
+                            </Button>
+                          </Row>
+                          <small className="login-link">
+                            Already have an account? Click{" "}
+                            <a
+                              href="/login"
+                              style={{
+                                textDecoration: "none",
+                                color: "red",
+                              }}
+                            >
+                              here
+                            </a>{" "}
+                            to login
+                          </small>
+                        </Form>
+                      )}
+                    </Formik>
                   </div>
                 </Card.Body>
               </Card>
