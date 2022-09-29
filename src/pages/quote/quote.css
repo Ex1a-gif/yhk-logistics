@@ -17,3 +17,15 @@
 	font-weight: 500;
 	color: #ffffff;
 }
+
+.submit-btn:hover {
+	background-color: #890000;
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.submit-btn:focus {
+	background-color: #890000;
+	color: #ffffff;
+	text-decoration: none;
+}

@@ -2,6 +2,8 @@ import React from "react";
 import * as yup from "yup";
 import * as formik from "formik";
 import { Col, Container, Row, Form, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const QuoteForm = () => {
   const schema = yup.object().shape({
@@ -31,6 +33,8 @@ const QuoteForm = () => {
 
   const { Formik } = formik;
 
+  const navigate = useNavigate();
+
   return (
     <div>
       <Container>
@@ -43,7 +47,11 @@ const QuoteForm = () => {
         </div>
         <Formik
           validationSchema={schema}
-          onSubmit={console.log}
+          onSubmit={async (values) => {
+            console.log(values);
+            const res = await axios.post("/quote/add", values);
+            navigate("/transactions");
+          }}
           initialValues={{
             bookingDate: "",
             bookingTime: "",

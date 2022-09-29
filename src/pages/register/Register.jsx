@@ -1,18 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Card, Col, Container, Form, Row, Button } from "react-bootstrap";
 import * as yup from "yup";
 import * as formik from "formik";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Topbar from "../../components/topbar/Topbar";
+import { AuthContext } from "../../context/AuthContext";
 import "./register.css";
 import axios from "axios";
 
 const Register = () => {
+  const { dispatch } = useContext(AuthContext);
+
   const schema = yup.object().shape({
     firstName: yup.string().required("First name is required"),
     lastName: yup.string().required("Last Name is required"),
-    email: yup.string().required("Email is required"),
-    password: yup.string().required("Password is required"),
+    email: yup.string().email("Invalid email").required("Email is required"),
+    password: yup
+      .string()
+      .min(3, "Password must be between 3 to 25 characters")
+      .max(25, "Password must be between 3 to 25 characters")
+      .required("Password is required"),
     address: yup.string().required("Address is required"),
     contactNumber: yup.string().required("Contact number is required"),
     dateCreated: yup.date().default(function () {
@@ -23,6 +30,8 @@ const Register = () => {
   const { Formik } = formik;
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
   return (
     <div className="register">
@@ -49,8 +58,11 @@ const Register = () => {
                         contactNumber: "",
                       }}
                       onSubmit={async (values) => {
-                        await new Promise((r) => setTimeout(r, 500));
-                        alert(JSON.stringify(values, null, 2));
+                        const res = await axios.post("/auth/register", values);
+                        dispatch({ type: "LOGIN", payload: res.data });
+                        navigate(from, {
+                          replace: true,
+                        });
                       }}
                     >
                       {({
