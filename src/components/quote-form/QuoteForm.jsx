@@ -48,8 +48,14 @@ const QuoteForm = () => {
         <Formik
           validationSchema={schema}
           onSubmit={async (values) => {
-            console.log(values);
-            const res = await axios.post("/quote/add", values);
+            const customerName = localStorage.getItem("customerName");
+            const requestData = {
+              ...values,
+              customerName: customerName,
+            };
+            console.log(customerName);
+            const res = await axios.post("/quote/add", requestData);
+
             navigate("/transactions");
           }}
           initialValues={{

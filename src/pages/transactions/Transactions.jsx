@@ -1,22 +1,29 @@
+import axios from "axios";
 import React, { useState, useEffect, useMemo } from "react";
-import { Container, Table } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Container, Row, Table } from "react-bootstrap";
 import { useTable } from "react-table";
 import Topbar from "../../components/topbar/Topbar";
 
 const Transactions = () => {
+  const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
 
   const transactionsData = useMemo(() => [...transactions], [transactions]);
+
+  useEffect(() => {
+    getQuotes();
+  }, []);
 
   const transactionsColumns = useMemo(
     () => [
       {
         Header: "Quote ID",
-        accessor: "quoteId",
+        accessor: "_id",
       },
       {
         Header: "Package Type",
-        accessor: "packageType",
+        accessor: "parcelType",
       },
       {
         Header: "Quote Status",
@@ -31,15 +38,28 @@ const Transactions = () => {
         accessor: "deliveryStatus",
       },
       {
-        Header: "Date Created",
-        accessor: "timeStamp",
-        Cell: ({ value }) => (
-          <p>{new Date(value.seconds * 1000).toLocaleDateString("en-US")} </p>
-        ),
+        Header: "Booking Date",
+        accessor: "bookingDate",
       },
     ],
     []
   );
+
+  const getQuotes = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const customerName = user.firstName + " " + user.lastName;
+    console.log(customerName);
+    const createdQuotes = await axios.get("/quote/get-quotes", {
+      params: {
+        customerName: customerName,
+      },
+    });
+    setTransactions(createdQuotes.data);
+  };
+
+  const handleClick = (data) => {
+    navigate(`/transaction-details/${data._id}`, { state: data });
+  };
 
   const tableInstance = useTable({
     columns: transactionsColumns,
@@ -64,35 +84,44 @@ const Transactions = () => {
       </div>
       <div>
         <Container className="my-3">
-          <Table {...getTableProps()} responsive striped bordered hover>
-            <thead>
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()}>
-                      {column.render("Header")}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody {...getTableBodyProps()} className="dataTable">
-              {rows.map((row, idx) => {
-                prepareRow(row);
-
-                return (
-                  <tr
-                    {...row.getRowProps()}
-                    // onClick={() => handleClick(row.original)}
-                  >
-                    {row.cells.map((cell, idx) => (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+          <Row>
+            <Link to="/quote">
+              <Button className="login-topbar-btn rounded-0 px-4 py-2  mb-4 float-end">
+                Add New
+              </Button>
+            </Link>
+          </Row>
+          <div>
+            <Table {...getTableProps()} responsive striped bordered hover>
+              <thead>
+                {headerGroups.map((headerGroup) => (
+                  <tr {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column) => (
+                      <th {...column.getHeaderProps()}>
+                        {column.render("Header")}
+                      </th>
                     ))}
                   </tr>
-                );
-              })}
-            </tbody>
-          </Table>
+                ))}
+              </thead>
+              <tbody {...getTableBodyProps()} className="dataTable">
+                {rows.map((row, idx) => {
+                  prepareRow(row);
+
+                  return (
+                    <tr
+                      {...row.getRowProps()}
+                      // onClick={() => handleClick(row.original)}
+                    >
+                      {row.cells.map((cell, idx) => (
+                        <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
         </Container>
       </div>
     </div>

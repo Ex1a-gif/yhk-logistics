@@ -58,7 +58,17 @@ const Register = () => {
                         contactNumber: "",
                       }}
                       onSubmit={async (values) => {
-                        const res = await axios.post("/auth/register", values);
+                        const customerName =
+                          values.firstName + " " + values.lastName;
+                        localStorage.setItem("customerName", customerName);
+                        const requestData = {
+                          ...values,
+                          customerName: customerName,
+                        };
+                        const res = await axios.post(
+                          "/auth/register",
+                          requestData
+                        );
                         dispatch({ type: "LOGIN", payload: res.data });
                         navigate(from, {
                           replace: true,
