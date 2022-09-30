@@ -43,5 +43,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://yhk-logistics-api.vercel.app/api/"
+  "proxy": "https://localhost/5000/api"
 }
